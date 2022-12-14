@@ -6,24 +6,28 @@ from backend_db_lib.models import User, LPAAudit
 
 from auth_handler import TokenData
 from dao.tasks import GetTasksDAO, TaskDAO
+from pydantic import BaseModel
 
 router = APIRouter(
     prefix="/api/tasks",
     tags=["tasks"],
-    responses={404: {"description": "Not found"}},
+    responses={404: {"description": "Not found"}, 401: {"description": "Token not valid"}},
 )
 
+class GetTasksArgs(BaseModel):
+    authorization : str
 
-@router.get("/get-tasks")
-def get_tasks(authorization: str) -> GetTasksDAO:
-    token = TokenData.from_token(authorization)
+@router.post("/get-tasks/")
+def get_tasks(args : GetTasksArgs) -> GetTasksDAO:
+    token = TokenData.from_token(args.authorization)
     if token is None:
-        return GetTasksDAO(result=0)
+        raise HTTPException(
+            status_code=401, detail="Token not valid")
 
     with dbm.create_session() as session:
         user = session.query(User).get(token.user_id)
         if user is None:
-            return GetTasksDAO(result=0)
+            return GetTasksDAO(result=0, tasks=[])
 
         # combine multiple tasks later if more than lpa tasks are needed
         lpa_tasks = get_tasks_lpa(session, user)
