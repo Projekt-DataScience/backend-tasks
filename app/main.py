@@ -16,7 +16,7 @@ app.add_middleware(
 
 app.include_router(tasks_router)
 
-@app.get("/healthcheck")
+@app.get("/api/tasks/healthcheck")
 def healthcheck():
     return { "Status": "Up" }
 
