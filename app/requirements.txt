@@ -1,4 +1,4 @@
-fastapi
+fastapi[all]
 uvicorn
 databases[postgresql]
 psycopg2-binary
@@ -6,3 +6,4 @@ sqlalchemy
 passlib
 git+https://github.com/Projekt-DataScience/backend-db-lib@main#egg=backend_db_lib
 PyJWT
+pytest

@@ -12,5 +12,4 @@ JWT_SECRET = "feaf1952d59f883ecf260a8683fed21ab0ad9a53323eca4f"
 JWT_ALGORITHM = "HS256"
 DATABASE_URL = f"postgresql://{db_user}:{db_password}@{db_hostname}:{db_port}/{db_name}"
 LOGIN_TIME = 600
-
 dbm = DatabaseManager(base, DATABASE_URL)
