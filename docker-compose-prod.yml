@@ -5,30 +5,12 @@ services:
     build: ./app
     command: python /app/main.py
     depends_on:
-      user-management-service:
-        condition: service_started
       db:
         condition: service_healthy
-      manager:
-        condition: service_started
     volumes:
       - ./app:/app
     ports:
       - ${TASK_SERVICE_PORT}:${TASK_SERVICE_PORT}
-    networks:
-      - microservice-network
-    env_file:
-      - .env
-
-  user-management-service:
-    image: ghcr.io/projekt-datascience/backend-user-management:release
-    depends_on:
-      db:
-        condition: service_healthy
-      manager:
-        condition: service_started
-    ports:
-      - ${USER_MANAGEMENT_SERVICE_PORT}:${USER_MANAGEMENT_SERVICE_PORT}
     networks:
       - microservice-network
     env_file:
@@ -66,17 +48,6 @@ services:
     networks:
       - microservice-network
 
-  manager:
-    image: ghcr.io/projekt-datascience/manager:release
-    env_file:
-      - .env
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - manager_volume:/root
-    networks:
-      - microservice-network
 
 networks:
   microservice-network:
