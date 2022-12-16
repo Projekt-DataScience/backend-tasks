@@ -1,9 +1,11 @@
 version: '3.8'
 
 services:
-  audit-service:
+  tasks-service:
     build: ./app
     command: python /app/main.py
+    env_file:
+      - .env
     depends_on:
       user-management-service:
         condition: service_started
@@ -14,14 +16,14 @@ services:
     volumes:
       - ./app:/app
     ports:
-      - ${TASK_SERVICE_PORT}:${TASK_SERVICE_PORT}
+      - ${TASKS_SERVICE_PORT}:${TASKS_SERVICE_PORT}
     networks:
       - microservice-network
-    env_file:
-      - .env
 
   user-management-service:
     image: ghcr.io/projekt-datascience/backend-user-management:release
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -31,12 +33,12 @@ services:
       - ${USER_MANAGEMENT_SERVICE_PORT}:${USER_MANAGEMENT_SERVICE_PORT}
     networks:
       - microservice-network
-    env_file:
-      - .env
 
   db:
     image: postgres:latest
     restart: always
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -52,8 +54,11 @@ services:
       timeout: 5s
       retries: 5
 
+
   db-manager:
     image: dpage/pgadmin4:latest
+    env_file:
+      - .env
     restart: always
     depends_on:
       db:
@@ -62,9 +67,10 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
-      - 8080:80
+      - "8080:80"
     networks:
       - microservice-network
+
 
   manager:
     image: ghcr.io/projekt-datascience/manager:release

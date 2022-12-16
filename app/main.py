@@ -1,3 +1,5 @@
+import os
+
 import uvicorn
 from fastapi import FastAPI
 from routes.tasks import router as tasks_router
@@ -21,4 +23,4 @@ def healthcheck():
     return { "Status": "Up" }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("TASKS_SERVICE_PORT", 8002)))
