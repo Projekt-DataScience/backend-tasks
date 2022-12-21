@@ -6,9 +6,8 @@ class TaskDAO(BaseModel):
     icon: str
     app_name : str
     title : str
-    date : str
     parameter : str
-    id : int
+    date : str
 
 class GetTasksDAO(BaseModel):
     result : int

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./app
+    command: python /app/main.py
+    volumes:
+      - ./app:/app
+    ports:
+      - ${TASKS_SERVICE_PORT}:${TASKS_SERVICE_PORT}
+    depends_on:
+      db:
+        condition: service_healthy
+      manager:
+        condition: service_started
+    env_file:
+      - .env
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      PGPORT: ${DB_PORT}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - .env
+
+  manager:
+    image: ghcr.io/projekt-datascience/manager:release
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
