@@ -10,6 +10,5 @@ class TaskDAO(BaseModel):
     date : str
 
 class GetTasksDAO(BaseModel):
-    result : int
     tasks : List[TaskDAO]
 

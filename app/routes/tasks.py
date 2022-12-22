@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, HTTPException
 from config import dbm
 from backend_db_lib.models import User, LPAAudit
 from dao.tasks import GetTasksDAO, TaskDAO
@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.post("/get-tasks/")
+@router.get("/get-tasks/")
 def get_tasks(authorization: Union[str, None] = Header(default=None)) -> GetTasksDAO:
     payload = validate_authorization(authorization)
     user_id = int(payload['user_id'])
@@ -22,13 +22,13 @@ def get_tasks(authorization: Union[str, None] = Header(default=None)) -> GetTask
     with dbm.create_session() as session:
         user = session.query(User).get(user_id)
         if user is None:
-            return GetTasksDAO(result=0, tasks=[])
+            raise HTTPException(
+                status_code=401, detail="Token not valid")
 
         # combine multiple tasks later if more than lpa tasks are needed
         lpa_tasks = get_tasks_lpa(session, user)
 
         return GetTasksDAO(
-            result=1,
             tasks=lpa_tasks,
         )
 
