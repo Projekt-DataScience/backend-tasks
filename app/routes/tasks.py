@@ -6,13 +6,11 @@ from backend_db_lib.models import User, LPAAudit
 from dao.tasks import GetTasksDAO, TaskDAO
 
 from helpers.auth import validate_authorization
-
 router = APIRouter(
     prefix="/api/tasks",
     tags=["tasks"],
     responses={404: {"description": "Not found"}, 401: {"description": "Token not valid"}},
 )
-
 
 @router.get("/get-tasks/")
 def get_tasks(authorization: Union[str, None] = Header(default=None)) -> GetTasksDAO:
@@ -61,6 +59,8 @@ def get_tasks_lpa(session, user) -> List[TaskDAO]:
                 action='audit',
                 parameter=f'{audit.id}',
                 date=str(audit.due_date),
+                layer=audit.assigned_layer.layer_number,
+                group=audit.assigned_group.group_name,
             )
             tasks.append(task)
         return tasks

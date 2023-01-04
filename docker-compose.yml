@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   tasks-service:
-    build: ./app
+    build: .
     command: python /app/main.py
     env_file:
       - .env
