@@ -39,3 +39,17 @@ services:
         condition: service_healthy
     env_file:
       - .env
+  
+  user-management-service:
+    image: ghcr.io/projekt-datascience/backend-user-management:release
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      manager:
+        condition: service_started
+    ports:
+      - ${USER_MANAGEMENT_SERVICE_PORT}:${USER_MANAGEMENT_SERVICE_PORT}
+    networks:
+      - microservice-network
