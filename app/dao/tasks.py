@@ -8,8 +8,9 @@ class TaskDAO(BaseModel):
     title : str
     parameter : str
     date : str
+    layer : int
+    group : str
 
 class GetTasksDAO(BaseModel):
-    result : int
     tasks : List[TaskDAO]
 
