@@ -51,5 +51,3 @@ services:
         condition: service_started
     ports:
       - ${USER_MANAGEMENT_SERVICE_PORT}:${USER_MANAGEMENT_SERVICE_PORT}
-    networks:
-      - microservice-network
